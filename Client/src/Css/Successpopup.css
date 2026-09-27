@@ -1,0 +1,45 @@
+.success-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 380px;
+  max-width: 90%;
+
+  padding: 25px 30px;
+
+  background: #0d47a1;
+  color: white;
+
+  border-radius: 12px;
+
+  box-shadow: 0 8px 25px rgba(13, 71, 161, 0.3);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 1000;
+}
+
+.success-popup p {
+  margin: 0;
+
+  color: white;
+  font-size: 18px;
+  font-weight: 500;
+  text-align: center;
+}
+
+
+@media (max-width: 600px) {
+  .success-popup {
+    width: 90%;
+    padding: 20px;
+  }
+
+  .success-popup p {
+    font-size: 16px;
+  }
+}

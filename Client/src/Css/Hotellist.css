@@ -1,0 +1,34 @@
+.hotel-list {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  padding: 40px 30px;
+
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 30px;
+
+  background: #f5f9ff;
+
+  box-sizing: border-box;
+}
+
+
+@media (max-width: 1100px) {
+  .hotel-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 25px;
+    padding: 35px 25px;
+  }
+}
+
+
+
+@media (max-width: 600px) {
+  .hotel-list {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 25px 18px;
+  }
+}

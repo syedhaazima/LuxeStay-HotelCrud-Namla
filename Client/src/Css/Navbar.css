@@ -1,0 +1,97 @@
+.Navbar {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.Navbar nav {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: #0d47a1;
+  padding: 16px 50px;
+
+  box-sizing: border-box;
+}
+
+.Navbar h1 {
+  margin: 0;
+
+  color: white;
+  font-family: Arial, sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.Navbar button {
+  min-width: 90px;
+  padding: 10px 20px;
+
+  background: white;
+  color: #0d47a1;
+
+  border: 2px solid transparent;
+  border-radius: 8px;
+
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.Navbar button:hover {
+  background: #e3f2fd;
+  color: #0b3d91;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.18);
+}
+
+.Navbar button:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Tablet */
+
+@media (max-width: 768px) {
+  .Navbar nav {
+    padding: 14px 30px;
+  }
+
+  .Navbar h1 {
+    font-size: 26px;
+  }
+
+  .Navbar button {
+    min-width: 85px;
+  }
+}
+
+
+
+@media (max-width: 600px) {
+  .Navbar nav {
+    padding: 12px 20px;
+  }
+
+  .Navbar h1 {
+    font-size: 22px;
+  }
+
+  .Navbar button {
+    min-width: 75px;
+    padding: 8px 14px;
+    font-size: 14px;
+  }
+}

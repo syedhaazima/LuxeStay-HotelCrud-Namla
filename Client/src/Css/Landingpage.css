@@ -1,0 +1,139 @@
+.Landingpage {
+  min-height: 80vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+
+  background:
+    url("../assets/hotels.png");
+
+  background-size: cover;
+  background-position: center;
+
+  color: white;
+  padding: 40px 20px;
+}
+
+.Landingpage p {
+  font-size: 20px;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.Landingpage h2 {
+  font-size: 42px;
+  margin: 10px 0 25px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+
+.search-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  width: 100%;
+  max-width: 920px;
+
+  flex-wrap: wrap;
+}
+
+.Landingpage input {
+  width: 220px;
+
+  padding: 13px 15px;
+
+  border: none;
+  border-radius: 7px;
+  outline: none;
+
+  background: white;
+  color: #333;
+
+  font-size: 14px;
+}
+
+.Landingpage input::placeholder {
+  color: #666;
+}
+
+.Landingpage input:focus {
+  box-shadow: 0 0 0 2px #90caf9;
+}
+
+
+.Landingpage button {
+  padding: 13px 26px;
+
+  border: none;
+  border-radius: 7px;
+
+  background: #0d47a1;
+  color: white;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.Landingpage button:hover {
+  background: #1565c0;
+}
+
+
+@media (max-width: 768px) {
+  .Landingpage {
+    min-height: 75vh;
+    padding: 40px 20px;
+  }
+
+  .Landingpage h2 {
+    font-size: 34px;
+  }
+
+  .search-box {
+    width: 90%;
+  }
+
+  .Landingpage input {
+    width: 200px;
+  }
+}
+
+
+@media (max-width: 600px) {
+  .Landingpage {
+    min-height: 70vh;
+    padding: 35px 15px;
+  }
+
+  .Landingpage p {
+    font-size: 17px;
+  }
+
+  .Landingpage h2 {
+    font-size: 28px;
+    margin: 10px 0 22px;
+  }
+
+  .search-box {
+    width: 100%;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .Landingpage input,
+  .Landingpage button {
+    width: 100%;
+    max-width: 350px;
+  }
+}
