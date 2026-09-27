@@ -59,7 +59,7 @@ const Hotelform = ({ mode = "add", hotel, setRefresh }) => {
       formData.append("longitude", longitude);
 
       axios
-        .post("http://localhost:5000/api/hotels", formData)
+        .post("https://luxestay-hotelcrud-namla.onrender.com/api/hotels", formData)
         .then(() => {
           setRefresh((prev) => prev + 1);
           navigate("/");
@@ -82,7 +82,7 @@ const Hotelform = ({ mode = "add", hotel, setRefresh }) => {
 
       axios
         .put(
-          `http://localhost:5000/api/hotels/${hotel.id}`,
+          `https://luxestay-hotelcrud-namla.onrender.com/api/hotels/${hotel.id}`,
           formData
         )
         .then(() => {
@@ -139,7 +139,7 @@ const Hotelform = ({ mode = "add", hotel, setRefresh }) => {
             src={
               image.startsWith("data:")
                 ? image
-                : `http://localhost:5000${image}`
+                : `https://luxestay-hotelcrud-namla.onrender.com${image}`
             }
             alt="Hotel Preview"
             width="200"

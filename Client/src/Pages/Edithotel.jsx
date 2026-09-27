@@ -7,7 +7,7 @@ const Edithotel = ({ setRefresh }) => {
     const [hotel, setHotel] = useState(null);
     useEffect(() => {
  axios
-    .get(`http://localhost:5000/api/hotels/${id}`)
+    .get(`https://luxestay-hotelcrud-namla.onrender.com/api/hotels/${id}`)
     .then((response) => {
       setHotel(response.data);
     })

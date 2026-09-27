@@ -10,7 +10,7 @@ const Hoteldetails = () => {
  const [userLocation, setUserLocation] = useState(null);
  useEffect(() => {
   axios
-    .get(`http://localhost:5000/api/hotels/${id}`)
+    .get(`https://luxestay-hotelcrud-namla.onrender.com/api/hotels/${id}`)
     .then((response) => {
       setHotel(response.data);
     })
@@ -49,7 +49,7 @@ useEffect(() => {
       <h1>{hotel.title}</h1>
 
      <img
-  src={`http://localhost:5000${hotel.image}`}
+  src={`http://luxestay-hotelcrud-namla.onrender.com${hotel.image}`}
   alt={hotel.title}
   width="300"
 />

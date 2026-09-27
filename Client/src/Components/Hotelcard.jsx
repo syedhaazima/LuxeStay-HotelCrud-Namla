@@ -12,7 +12,7 @@ const Hotelcard = ({ hotel, onDelete, setRefresh }) => {
       onClick={() => navigate(`/hotel/${hotel.id}`)}
     >
       <img
-        src={`http://localhost:5000${hotel.image}`}
+        src={`http://luxestay-hotelcrud-namla.onrender.com${hotel.image}`}
         alt={hotel.title}
         width="200"
       />
@@ -41,7 +41,7 @@ const Hotelcard = ({ hotel, onDelete, setRefresh }) => {
           e.stopPropagation();
 
           axios
-            .delete(`http://localhost:5000/api/hotels/${hotel.id}`)
+            .delete(`https://luxestay-hotelcrud-namla.onrender.com/api/hotels/${hotel.id}`)
             .then(() => {
               setRefresh((prev) => prev + 1);
               onDelete();

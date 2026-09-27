@@ -22,7 +22,7 @@ const [refresh, setRefresh] = useState(0);
 const hotelsPerPage = 8;
 const dispatch = useDispatch();
 useEffect(() => {
-  let url = "http://localhost:5000/api/hotels";
+  let url = "https://luxestay-hotelcrud-namla.onrender.com/api/hotels";
 
   const params = new URLSearchParams();
   params.append("limit", hotelsPerPage);
