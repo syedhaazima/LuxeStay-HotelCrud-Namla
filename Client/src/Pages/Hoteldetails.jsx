@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams , useNavigate} from "react-router-dom";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
 import "../Css/Hoteldetails.css";
 const Hoteldetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
  const [hotel, setHotel] = useState(null);
  const [userLocation, setUserLocation] = useState(null);
@@ -46,10 +47,16 @@ useEffect(() => {
     content={`View details of ${hotel.title} on LuxeStay.`}
   />
 </Helmet>
+<button
+  className="back-explore"
+  onClick={() => navigate("/")}
+>
+  ← Back to Explore
+</button>
       <h1>{hotel.title}</h1>
 
      <img
-  src={`http://luxestay-hotelcrud-namla.onrender.com${hotel.image}`}
+  src={`https://luxestay-hotelcrud-namla.onrender.com${hotel.image}`}
   alt={hotel.title}
   width="300"
 />

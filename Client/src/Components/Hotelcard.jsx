@@ -12,7 +12,7 @@ const Hotelcard = ({ hotel, onDelete, setRefresh }) => {
       onClick={() => navigate(`/hotel/${hotel.id}`)}
     >
       <img
-        src={`http://luxestay-hotelcrud-namla.onrender.com${hotel.image}`}
+       src={`https://luxestay-hotelcrud-namla.onrender.com${hotel.image}`}
         alt={hotel.title}
         width="200"
       />
