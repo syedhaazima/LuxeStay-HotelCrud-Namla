@@ -1,6 +1,21 @@
 const pool = require("../Db");
 const fs = require("fs");
 const path = require("path");
+const { uploadDir } = require("../Middleware/upload");
+
+const validHotelFields = ({ title, description, latitude, longitude, price }) => {
+  const lat = Number(latitude);
+  const lng = Number(longitude);
+  const amount = Number(price);
+  return Boolean(title?.trim() && description?.trim()) &&
+    Number.isFinite(lat) && lat >= -90 && lat <= 90 &&
+    Number.isFinite(lng) && lng >= -180 && lng <= 180 &&
+    Number.isFinite(amount) && amount > 0;
+};
+
+const removeUpload = (file) => {
+  if (file?.path && fs.existsSync(file.path)) fs.unlinkSync(file.path);
+};
 
 const addHotel = async (req, res) => {
   try {
@@ -12,34 +27,10 @@ const addHotel = async (req, res) => {
       price
     } = req.body;
 
-    if (
-      !req.file ||
-      !title ||
-      !description ||
-      !latitude ||
-      !longitude ||
-      !price
-    ) {
+    if (!req.file || !validHotelFields(req.body)) {
+      removeUpload(req.file);
       return res.status(400).json({
-        message: "All fields are required"
-      });
-    }
-
-    if (Number(price) <= 0) {
-      return res.status(400).json({
-        message: "Price must be greater than 0"
-      });
-    }
-
-    if (Number(latitude) < -90 || Number(latitude) > 90) {
-      return res.status(400).json({
-        message: "Latitude must be between -90 and 90"
-      });
-    }
-
-    if (Number(longitude) < -180 || Number(longitude) > 180) {
-      return res.status(400).json({
-        message: "Longitude must be between -180 and 180"
+        message: "Provide an image, title, description, valid coordinates, and a price greater than 0"
       });
     }
 
@@ -63,6 +54,7 @@ const addHotel = async (req, res) => {
     res.status(201).json(result.rows[0]);
 
   } catch (error) {
+    removeUpload(req.file);
     console.log(error);
 
     res.status(500).json({
@@ -81,6 +73,16 @@ const getHotels = async (req, res) => {
       limit = 8,
       offset = 0
     } = req.query;
+
+    const parsedLimit = Number(limit);
+    const parsedOffset = Number(offset);
+    if (!Number.isInteger(parsedLimit) || parsedLimit < 1 || parsedLimit > 100 ||
+        !Number.isInteger(parsedOffset) || parsedOffset < 0 ||
+        (minPrice !== undefined && (!Number.isFinite(Number(minPrice)) || Number(minPrice) < 0)) ||
+        (maxPrice !== undefined && (!Number.isFinite(Number(maxPrice)) || Number(maxPrice) < 0)) ||
+        (minPrice !== undefined && maxPrice !== undefined && Number(minPrice) > Number(maxPrice))) {
+      return res.status(400).json({ message: "Invalid price range or pagination values" });
+    }
 
     let query = "SELECT * FROM hotels WHERE 1=1";
     let countQuery = "SELECT COUNT(*) FROM hotels WHERE 1=1";
@@ -183,33 +185,10 @@ const updateHotel = async (req, res) => {
       price
     } = req.body;
 
-    if (
-      !title ||
-      !description ||
-      !latitude ||
-      !longitude ||
-      !price
-    ) {
+    if (!validHotelFields(req.body)) {
+      removeUpload(req.file);
       return res.status(400).json({
-        message: "All fields are required"
-      });
-    }
-
-    if (Number(price) <= 0) {
-      return res.status(400).json({
-        message: "Price must be greater than 0"
-      });
-    }
-
-    if (Number(latitude) < -90 || Number(latitude) > 90) {
-      return res.status(400).json({
-        message: "Latitude must be between -90 and 90"
-      });
-    }
-
-    if (Number(longitude) < -180 || Number(longitude) > 180) {
-      return res.status(400).json({
-        message: "Longitude must be between -180 and 180"
+        message: "Provide a title, description, valid coordinates, and a price greater than 0"
       });
     }
 
@@ -219,6 +198,7 @@ const updateHotel = async (req, res) => {
     );
 
     if (oldHotel.rows.length === 0) {
+      removeUpload(req.file);
       return res.status(404).json({
         message: "Hotel not found"
       });
@@ -231,22 +211,6 @@ const updateHotel = async (req, res) => {
       imagePath = `/uploads/${req.file.filename}`;
 
      
-      if (oldHotel.rows[0].image) {
-        const oldImageName = path.basename(
-          oldHotel.rows[0].image
-        );
-
-        const oldImagePath = path.join(
-          __dirname,
-          "..",
-          "uploads",
-          oldImageName
-        );
-
-        if (fs.existsSync(oldImagePath)) {
-          fs.unlinkSync(oldImagePath);
-        }
-      }
     }
 
     const result = await pool.query(
@@ -269,6 +233,16 @@ const updateHotel = async (req, res) => {
         id
       ]
     );
+
+    if (req.file && oldHotel.rows[0].image) {
+      const oldImageName = path.basename(oldHotel.rows[0].image);
+      const oldImagePath = path.join(uploadDir, oldImageName);
+      const stillReferenced = await pool.query(
+        "SELECT 1 FROM hotels WHERE image = $1 AND id <> $2 LIMIT 1",
+        [oldHotel.rows[0].image, id]
+      );
+      if (!stillReferenced.rowCount && fs.existsSync(oldImagePath)) fs.unlinkSync(oldImagePath);
+    }
 
     res.json(result.rows[0]);
 
@@ -309,15 +283,12 @@ const deleteHotel = async (req, res) => {
   
     if (image) {
       const imageName = path.basename(image);
-
-      const imagePath = path.join(
-        __dirname,
-        "..",
-        "uploads",
-        imageName
+      const imagePath = path.join(uploadDir, imageName);
+      const stillReferenced = await pool.query(
+        "SELECT 1 FROM hotels WHERE image = $1 LIMIT 1",
+        [image]
       );
-
-      if (fs.existsSync(imagePath)) {
+      if (!stillReferenced.rowCount && fs.existsSync(imagePath)) {
         fs.unlinkSync(imagePath);
       }
     }

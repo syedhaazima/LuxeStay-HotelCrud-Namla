@@ -3,15 +3,24 @@ const express = require("express");
 const cors = require("cors");
 const pool = require("./Db");
 const hotelRoutes = require("./Routes/hotelRoutes");
+const { uploadDir } = require("./Middleware/upload");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static(uploadDir));
 
 app.use("/api", hotelRoutes);
+
+app.use((error, req, res, next) => {
+  if (res.headersSent) return next(error);
+  if (error.code === "LIMIT_FILE_SIZE") {
+    return res.status(400).json({ message: "Image must be 5 MB or smaller" });
+  }
+  return res.status(400).json({ message: error.message || "Invalid request" });
+});
 
 app.get("/", (req, res) => {
   res.send("LuxeStay Backend is running");

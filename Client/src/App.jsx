@@ -11,6 +11,7 @@ import Hoteldetails from "./Pages/Hoteldetails";
 import { useDispatch } from "react-redux";
 import { loadHotels } from "./Redux/Hotelsclice";
 import Footer from "./Components/Footer";
+import { API_BASE_URL } from "./api";
 
 const App = () => {
   const [search, setSearch] = useState("");
@@ -19,10 +20,11 @@ const [maxPrice, setMaxPrice] = useState("");
 const [currentPage, setCurrentPage] = useState(1);
 const [totalHotels, setTotalHotels] = useState(0);
 const [refresh, setRefresh] = useState(0);
+const [fetchError, setFetchError] = useState("");
 const hotelsPerPage = 8;
 const dispatch = useDispatch();
 useEffect(() => {
-  let url = "https://luxestay-hotelcrud-namla.onrender.com/api/hotels";
+  let url = `${API_BASE_URL}/api/hotels`;
 
   const params = new URLSearchParams();
   params.append("limit", hotelsPerPage);
@@ -46,11 +48,15 @@ params.append("offset", (currentPage - 1) * hotelsPerPage);
 
  axios.get(url)
   .then((response) => {
+    setFetchError("");
     dispatch(loadHotels(response.data.hotels));
     setTotalHotels(response.data.total);
+    const pages = Math.ceil(response.data.total / hotelsPerPage);
+    if (currentPage > Math.max(pages, 1)) setCurrentPage(Math.max(pages, 1));
   })
   .catch((error) => {
     console.log("Error fetching hotels:", error);
+    setFetchError("Could not load hotels. Check that the API server is running.");
   });
 }, [search, minPrice, maxPrice,  currentPage,dispatch,refresh]);
 useEffect(() => {
@@ -72,6 +78,7 @@ useEffect(() => {
   maxPrice={maxPrice}
   setMaxPrice={setMaxPrice}/>
   <Hotellist 
+  fetchError={fetchError}
   currentPage={currentPage} 
   setCurrentPage={setCurrentPage}
   totalHotels={totalHotels}

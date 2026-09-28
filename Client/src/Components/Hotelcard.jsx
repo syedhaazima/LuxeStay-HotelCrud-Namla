@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../Css/Hotelcard.css";
+import { API_BASE_URL, imageUrl } from "../api";
 
 const Hotelcard = ({ hotel, onDelete, setRefresh }) => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const Hotelcard = ({ hotel, onDelete, setRefresh }) => {
       onClick={() => navigate(`/hotel/${hotel.id}`)}
     >
     <img
-  src={`https://luxestay-hotelcrud-namla.onrender.com${hotel.image}`}
+  src={imageUrl(hotel.image)}
   alt={hotel.title}
   className="hotel-image"
 />
@@ -42,7 +43,7 @@ const Hotelcard = ({ hotel, onDelete, setRefresh }) => {
           e.stopPropagation();
 
           axios
-            .delete(`https://luxestay-hotelcrud-namla.onrender.com/api/hotels/${hotel.id}`)
+            .delete(`${API_BASE_URL}/api/hotels/${hotel.id}`)
             .then(() => {
               setRefresh((prev) => prev + 1);
               onDelete();

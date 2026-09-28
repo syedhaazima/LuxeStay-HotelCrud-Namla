@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
+import { API_BASE_URL, imageUrl } from "../api";
 import "../Css/Hotelform.css";
 
 const Hotelform = ({ mode = "add", hotel, setRefresh }) => {
@@ -17,26 +18,37 @@ const Hotelform = ({ mode = "add", hotel, setRefresh }) => {
   const [latitude, setLatitude] = useState(hotel?.latitude || "");
   const [longitude, setLongitude] = useState(hotel?.longitude || "");
   const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setImage(hotel?.image || "");
+    setImageFile(null);
+    setTitle(hotel?.title || "");
+    setDescription(hotel?.description || "");
+    setPrice(hotel?.price ?? "");
+    setLatitude(hotel?.latitude ?? "");
+    setLongitude(hotel?.longitude ?? "");
+  }, [hotel]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!title || !description || !price || !latitude || !longitude) {
+    if (!title.trim() || !description.trim() || price === "" || latitude === "" || longitude === "") {
       setError("Please fill all the fields");
       return;
     }
 
-    if (Number(price) <= 0) {
-      setError("Price must be greater than 0");
+    if (!Number.isFinite(Number(price)) || Number(price) <= 0) {
+      setError("Price must be a number greater than 0");
       return;
     }
 
-    if (Number(latitude) < -90 || Number(latitude) > 90) {
+    if (!Number.isFinite(Number(latitude)) || Number(latitude) < -90 || Number(latitude) > 90) {
       setError("Latitude must be between -90 and 90");
       return;
     }
 
-    if (Number(longitude) < -180 || Number(longitude) > 180) {
+    if (!Number.isFinite(Number(longitude)) || Number(longitude) < -180 || Number(longitude) > 180) {
       setError("Longitude must be between -180 and 180");
       return;
     }
@@ -47,58 +59,42 @@ const Hotelform = ({ mode = "add", hotel, setRefresh }) => {
     }
 
     setError("");
+    setSaving(true);
 
-    if (mode === "add") {
-      const formData = new FormData();
+    const formData = new FormData();
+    if (imageFile) formData.append("image", imageFile);
+    formData.append("title", title.trim());
+    formData.append("description", description.trim());
+    formData.append("price", price);
+    formData.append("latitude", latitude);
+    formData.append("longitude", longitude);
 
-      formData.append("image", imageFile);
-      formData.append("title", title);
-      formData.append("description", description);
-      formData.append("price", price);
-      formData.append("latitude", latitude);
-      formData.append("longitude", longitude);
-
-      axios
-        .post("https://luxestay-hotelcrud-namla.onrender.com/api/hotels", formData)
-        .then(() => {
-          setRefresh((prev) => prev + 1);
-          navigate("/");
-        })
-        .catch((error) => {
-          console.log("Error adding hotel:", error);
-        });
-    } else {
-      const formData = new FormData();
-
-      formData.append("title", title);
-      formData.append("description", description);
-      formData.append("price", price);
-      formData.append("latitude", latitude);
-      formData.append("longitude", longitude);
-
-      if (imageFile) {
-        formData.append("image", imageFile);
-      }
-
-      axios
-        .put(
-          `https://luxestay-hotelcrud-namla.onrender.com/api/hotels/${hotel.id}`,
-          formData
-        )
-        .then(() => {
-          setRefresh((prev) => prev + 1);
-          navigate("/");
-        })
-        .catch((error) => {
-          console.log("Error updating hotel:", error);
-        });
-    }
+    const request = mode === "add"
+      ? axios.post(`${API_BASE_URL}/api/hotels`, formData)
+      : axios.put(`${API_BASE_URL}/api/hotels/${hotel.id}`, formData);
+    request.then(() => {
+      setRefresh((prev) => prev + 1);
+      navigate("/");
+    }).catch((requestError) => {
+      setError(requestError.response?.data?.message || "Could not save the hotel. Please try again.");
+    }).finally(() => setSaving(false));
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
 
     if (file) {
+      if (!file.type.startsWith("image/")) {
+        setError("Please choose an image file");
+        e.target.value = "";
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        setError("Image must be 5 MB or smaller");
+        e.target.value = "";
+        return;
+      }
+      setError("");
       setImageFile(file);
 
       const reader = new FileReader();
@@ -126,20 +122,19 @@ const Hotelform = ({ mode = "add", hotel, setRefresh }) => {
           {mode === "add" ? "Add Hotel" : "Edit Hotel"}
         </h1>
 
-        {error && <p>{error}</p>}
-
+        {error && <p role="alert">{error}</p>}
         <input
           type="file"
           accept="image/*"
+          required={mode === "add"}
+          aria-label="Hotel image"
           onChange={handleImageChange}
         />
 
         {image && (
           <img
             src={
-              image.startsWith("data:")
-                ? image
-                : `https://luxestay-hotelcrud-namla.onrender.com${image}`
+              image.startsWith("data:") ? image : imageUrl(image)
             }
             alt="Hotel Preview"
             width="200"
@@ -149,12 +144,17 @@ const Hotelform = ({ mode = "add", hotel, setRefresh }) => {
         <input
           type="text"
           placeholder="Title..."
+          aria-label="Hotel title"
+          required
+          maxLength={150}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
 
         <textarea
           placeholder="Description..."
+          aria-label="Hotel description"
+          required
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         ></textarea>
@@ -162,6 +162,10 @@ const Hotelform = ({ mode = "add", hotel, setRefresh }) => {
         <input
           type="number"
           placeholder="Price..."
+          aria-label="Price"
+          min="0.01"
+          step="0.01"
+          required
           value={price}
           onChange={(e) => setPrice(e.target.value)}
         />
@@ -169,6 +173,11 @@ const Hotelform = ({ mode = "add", hotel, setRefresh }) => {
         <input
           type="number"
           placeholder="Latitude..."
+          aria-label="Latitude"
+          min="-90"
+          max="90"
+          step="any"
+          required
           value={latitude}
           onChange={(e) => setLatitude(e.target.value)}
         />
@@ -176,12 +185,17 @@ const Hotelform = ({ mode = "add", hotel, setRefresh }) => {
         <input
           type="number"
           placeholder="Longitude..."
+          aria-label="Longitude"
+          min="-180"
+          max="180"
+          step="any"
+          required
           value={longitude}
           onChange={(e) => setLongitude(e.target.value)}
         />
 
-        <button type="submit">
-          {mode === "add" ? "Add Hotel" : "Update Hotel"}
+        <button type="submit" disabled={saving}>
+          {saving ? "Saving..." : mode === "add" ? "Add Hotel" : "Update Hotel"}
         </button>
       </form>
     </div>

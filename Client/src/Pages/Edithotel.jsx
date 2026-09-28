@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import axios from "axios";
 import Hotelform from '../Components/Hotelform'
+import { API_BASE_URL } from "../api";
 const Edithotel = ({ setRefresh }) => {
     const { id } = useParams();
     const [hotel, setHotel] = useState(null);
     useEffect(() => {
  axios
-    .get(`https://luxestay-hotelcrud-namla.onrender.com/api/hotels/${id}`)
+    .get(`${API_BASE_URL}/api/hotels/${id}`)
     .then((response) => {
       setHotel(response.data);
     })

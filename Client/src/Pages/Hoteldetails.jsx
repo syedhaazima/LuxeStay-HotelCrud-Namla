@@ -3,15 +3,17 @@ import { useParams , useNavigate} from "react-router-dom";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
 import "../Css/Hoteldetails.css";
+import { API_BASE_URL, imageUrl } from "../api";
 const Hoteldetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
  const [hotel, setHotel] = useState(null);
  const [userLocation, setUserLocation] = useState(null);
+ const [locationError, setLocationError] = useState("");
  useEffect(() => {
   axios
-    .get(`https://luxestay-hotelcrud-namla.onrender.com/api/hotels/${id}`)
+    .get(`${API_BASE_URL}/api/hotels/${id}`)
     .then((response) => {
       setHotel(response.data);
     })
@@ -22,6 +24,10 @@ const Hoteldetails = () => {
   
 //geolocation api fetching
 useEffect(() => {
+  if (!navigator.geolocation) {
+    setLocationError("Geolocation is not supported by this browser.");
+    return;
+  }
   navigator.geolocation.getCurrentPosition(
     (position) => {
       setUserLocation({
@@ -30,7 +36,7 @@ useEffect(() => {
       });
     },
     (error) => {
-      console.log("Location error:", error);
+      setLocationError(error.message || "Location permission was not granted.");
     }
   );
 }, []);
@@ -56,7 +62,7 @@ useEffect(() => {
       <h1>{hotel.title}</h1>
 
      <img
-  src={`https://luxestay-hotelcrud-namla.onrender.com${hotel.image}`}
+  src={imageUrl(hotel.image)}
   alt={hotel.title}
   width="300"
 />
@@ -75,7 +81,8 @@ useEffect(() => {
     Your current location: {userLocation.latitude},{" "}
     {userLocation.longitude}
   </p>
-)}
+      )}
+      {locationError && <p role="status">{locationError}</p>}
 
 <iframe
   title="Hotel Location"

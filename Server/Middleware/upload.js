@@ -2,7 +2,9 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-const uploadDir = path.join(__dirname, "..", "uploads");
+// Set UPLOAD_DIR to the mounted persistent-disk directory in production.
+// Locally, keep uploads in Server/Uploads.
+const uploadDir = process.env.UPLOAD_DIR || path.join(__dirname, "..", "Uploads");
 
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
@@ -17,7 +19,7 @@ const storage = multer.diskStorage({
   },
 
   filename: (req, file, cb) => {
-    const fileName = Date.now() + path.extname(file.originalname);
+    const fileName = `${Date.now()}-${require("crypto").randomUUID()}${path.extname(file.originalname).toLowerCase()}`;
 
     console.log("SAVING FILE AS:", fileName);
 
@@ -26,7 +28,15 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({
-  storage: storage
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    if (!file.mimetype.startsWith("image/")) {
+      return cb(new Error("Only image files are allowed"));
+    }
+    cb(null, true);
+  }
 });
 
 module.exports = upload;
+module.exports.uploadDir = uploadDir;
