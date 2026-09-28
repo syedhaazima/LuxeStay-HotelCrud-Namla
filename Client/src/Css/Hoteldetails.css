@@ -30,7 +30,7 @@
   overflow-wrap: anywhere;
 }
 
-/* Section heading */
+
 .hotel-details h2 {
   margin: 35px 0 15px;
   color: #0d47a1;
@@ -38,7 +38,7 @@
   font-weight: 700;
 }
 
-/* Hotel image */
+
 .hotel-details img {
   width: 100%;
   max-width: 700px;
@@ -49,7 +49,7 @@
   margin-bottom: 28px;
 }
 
-/* Details text */
+
 .hotel-details p {
   margin: 14px 0;
   color: #555;
@@ -59,14 +59,14 @@
   word-break: break-word;
 }
 
-/* Price */
+
 .hotel-details p:nth-of-type(2) {
   color: #0d47a1;
   font-size: 20px;
   font-weight: 700;
 }
 
-/* Map */
+
 .hotel-details iframe {
   width: 100%;
   max-width: 850px;
@@ -77,7 +77,7 @@
   margin-top: 15px;
 }
 
-/* Tablet */
+
 @media (max-width: 768px) {
   .hotel-details {
     width: calc(100% - 30px);
@@ -108,7 +108,7 @@
   }
 }
 
-/* Mobile */
+
 @media (max-width: 600px) {
   .hotel-details {
     width: calc(100% - 24px);
@@ -155,7 +155,7 @@
   }
 }
 
-/* Very small mobile */
+
 @media (max-width: 380px) {
   .hotel-details {
     width: calc(100% - 16px);
