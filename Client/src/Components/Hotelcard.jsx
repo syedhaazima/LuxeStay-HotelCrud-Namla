@@ -5,21 +5,17 @@ import "../Css/Hotelcard.css";
 
 const Hotelcard = ({ hotel, onDelete, setRefresh }) => {
   const navigate = useNavigate();
-console.log("HOTEL IMAGE:", hotel.image);
+
 
   return (
     <div
       className="hotel-card"
       onClick={() => navigate(`/hotel/${hotel.id}`)}
     >
-     <img
-  src={
-    hotel.image?.startsWith("http")
-      ? hotel.image
-      : `https://luxestay-hotelcrud-namla.onrender.com${hotel.image}`
-  }
+    <img
+  src={`https://luxestay-hotelcrud-namla.onrender.com${hotel.image}`}
   alt={hotel.title}
-  width="200"
+  className="hotel-image"
 />
 
       <h2>{hotel.title}</h2>
