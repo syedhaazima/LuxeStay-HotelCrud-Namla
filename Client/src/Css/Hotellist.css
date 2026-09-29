@@ -4,28 +4,47 @@
   margin: 0 auto;
   padding: 40px 30px;
 
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+
+  gap: 36px;
 
   background: #f5f9ff;
   box-sizing: border-box;
 }
 
+/* Each hotel card */
+.hotel-list > * {
+  width: 390px;
+  flex: 0 0 390px;
+}
+
 /* Tablet */
 @media (max-width: 800px) {
   .hotel-list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 25px;
     padding: 35px 25px;
+    gap: 25px;
+  }
+
+  .hotel-list > * {
+    width: 320px;
+    flex: 0 0 320px;
   }
 }
 
 /* Mobile */
 @media (max-width: 600px) {
   .hotel-list {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: center;
     gap: 20px;
     padding: 25px 18px;
+  }
+
+  .hotel-list > * {
+    width: 100%;
+    max-width: 400px;
+    flex: none;
   }
 }
