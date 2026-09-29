@@ -4,7 +4,7 @@ const fs = require("fs");
 
 // Set UPLOAD_DIR to the mounted persistent-disk directory in production.
 // Locally, keep uploads in Server/Uploads.
-const uploadDir = process.env.UPLOAD_DIR || path.join(__dirname, "..", "Uploads");
+const uploadDir = process.env.UPLOAD_DIR || path.join(__dirname, "..", "uploads");
 
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
