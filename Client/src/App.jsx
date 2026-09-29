@@ -21,7 +21,7 @@ const [currentPage, setCurrentPage] = useState(1);
 const [totalHotels, setTotalHotels] = useState(0);
 const [refresh, setRefresh] = useState(0);
 const [fetchError, setFetchError] = useState("");
-const hotelsPerPage = 8;
+const hotelsPerPage = 2;
 const dispatch = useDispatch();
 useEffect(() => {
   let url = `${API_BASE_URL}/api/hotels`;
@@ -49,9 +49,10 @@ params.append("offset", (currentPage - 1) * hotelsPerPage);
  axios.get(url)
   .then((response) => {
     setFetchError("");
-    dispatch(loadHotels(response.data.hotels));
-    setTotalHotels(response.data.total);
-    const pages = Math.ceil(response.data.total / hotelsPerPage);
+    dispatch(loadHotels(Array.isArray(response.data.hotels) ? response.data.hotels : []));
+    const total = Number(response.data.total) || 0;
+    setTotalHotels(total);
+    const pages = Math.ceil(total / hotelsPerPage);
     if (currentPage > Math.max(pages, 1)) setCurrentPage(Math.max(pages, 1));
   })
   .catch((error) => {
@@ -100,3 +101,6 @@ useEffect(() => {
 };
 
 export default App;
+
+
+

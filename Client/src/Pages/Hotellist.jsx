@@ -11,7 +11,8 @@ const Hotellist = ({currentPage,setCurrentPage,totalHotels,setRefresh,fetchError
 
 
   const [showPopup, setShowPopup] = useState(false);
-  const totalPages = Math.ceil(totalHotels / 8);
+  const hotelsPerPage = 2;
+  const totalPages = Math.ceil(totalHotels / hotelsPerPage);
 
 
 
@@ -62,3 +63,6 @@ const Hotellist = ({currentPage,setCurrentPage,totalHotels,setRefresh,fetchError
 };
 
 export default Hotellist;
+
+
+
