@@ -42,25 +42,26 @@ https://luxe-stay-hotel-crud-namla.vercel.app/
 * Responsive user interface
 
 ## 📂 Project Structure
-
-```text
 LuxeStay-HotelCrud-Namla
 │
-├── Client
-│   ├── src
-│   │   ├── components
-│   │   ├── pages
-│   │   ├── redux
+├── Client/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── redux/
 │   │   └── App.jsx
 │   └── package.json
 │
-└── Server
-    ├── routes
-    ├── controllers
-    ├── uploads
-    ├── server.js
+└── Server/
+    ├── Controllers/
+    ├── Middleware/
+    ├── Routes/
+    ├── .gitignore
+    ├── Db.js
+    ├── Server.js
+    ├── package-lock.json
     └── package.json
-```
+
 
 ## ⚙️ Installation & Setup
 
@@ -84,8 +85,7 @@ Open another terminal:
 
 ```bash
 cd Server
-npm install
-npm start
+node Server.js
 ```
 
 ### 4. Environment Variables
