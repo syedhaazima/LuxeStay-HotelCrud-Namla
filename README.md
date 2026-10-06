@@ -85,6 +85,7 @@ Open another terminal:
 
 ```bash
 cd Server
+npm install
 node Server.js
 ```
 
